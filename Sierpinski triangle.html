@@ -1,0 +1,78 @@
+
+<body>
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid #000000;">
+</canvas>
+
+
+
+<script>
+
+
+	var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+	var tri = [[300,100], [100, 400],[500, 400]];
+	
+	var glx = 250;
+	var gly = 250;
+
+function init(){
+
+
+	//ctx.fillStyle = "#FF0000";
+	//ctx.fillRect(0,0,150,75);
+	makeCircle(tri[0][0], tri[0][1]);
+	makeCircle(tri[1][0], tri[1][1]);
+	makeCircle(tri[2][0], tri[2][1]);
+
+	makeCircle(glx, gly);
+
+}
+
+function makeCircle(x, y){
+	ctx.beginPath();
+	ctx.arc(x,y,1.5,0,2*Math.PI);
+	ctx.stroke();
+}
+
+function doLogic(gx, gy){
+	console.log(gx + ", " + gy);
+	var gx = glx;
+	var gy = gly;
+	var triNum = Math.floor((Math.random() * 3));
+
+	var new_x = 0;
+	var new_y = 0;
+	
+	new_x = (tri[triNum][0]-glx)/2 + glx;
+	new_y = (tri[triNum][1]-gly)/2 + gly;
+	
+	gx = new_x;
+	gy = new_y;
+	
+	glx = new_x;
+	gly = new_y;
+	
+	console.log(gx + ", " + gy);
+	makeCircle(glx,gly);
+}
+
+
+init();
+
+function move() {
+	doLogic();
+    setTimeout(function() {
+		move();//glx,gly)
+	}, 100);
+    
+} //)();
+
+
+move();
+
+
+
+</script>
+
+</body>
