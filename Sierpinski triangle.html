@@ -1,6 +1,6 @@
 
 <body>
-<canvas id="myCanvas" width="600" height="600" style="border:1px solid #000000;">
+<canvas id="myCanvas" width="900" height="900" style="border:1px solid #000000;">
 </canvas>
 
 
@@ -11,7 +11,28 @@
 	var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
-	var tri = [[300,100], [100, 400],[500, 400]];
+	//var tri = [[300,100], [100, 400],[500, 400]];
+	
+	//var tri = [[100,400], [100,100] , [400,100], [400,400]];
+	
+	
+	//var tri = [[100,400],[250,5], [50,100] , [450,100], [400,400]];
+	var tri = [];
+	var x0 = canvas.width/2;
+	var y0 = canvas.height/2;
+	
+	var r = 400;
+	var items = 5;
+	
+	for(var i = 0; i < items; i++){    
+		var x = x0 + r * Math.cos(2 * Math.PI * i / items); 
+		var y = y0 + r * Math.sin(2 * Math.PI * i / items);
+		tri.push([x,y]);
+	}
+
+	
+	var drawLine = false;
+	var size = .5;
 	
 	var glx = 250;
 	var gly = 250;
@@ -21,25 +42,46 @@ function init(){
 
 	//ctx.fillStyle = "#FF0000";
 	//ctx.fillRect(0,0,150,75);
-	makeCircle(tri[0][0], tri[0][1]);
-	makeCircle(tri[1][0], tri[1][1]);
-	makeCircle(tri[2][0], tri[2][1]);
+	for(var i = 0; i<tri.length; i++){
+		makeCircle(tri[i][0], tri[i][1]);
+	//makeCircle(tri[0][0], tri[0][1]);
+	//makeCircle(tri[1][0], tri[1][1]);
+	//makeCircle(tri[2][0], tri[2][1]);
+	}
 
 	makeCircle(glx, gly);
 
 }
 
 function makeCircle(x, y){
-	ctx.beginPath();
-	ctx.arc(x,y,1.5,0,2*Math.PI);
-	ctx.stroke();
-}
 
-function doLogic(gx, gy){
+	ctx.beginPath();
+	ctx.arc(x,y,size,0,2*Math.PI);
+	ctx.stroke();
+	
+	
+}
+function makeLine(x,y, x1,y1){
+	var imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+
+	ctx.strokeStyle = "#FF0000";
+	ctx.beginPath();
+	ctx.moveTo(x,y);
+	ctx.lineTo(x1,y1);
+	ctx.stroke();
+
+	ctx.strokeStyle = "#000000";
+	setTimeout(function () {
+		// return the canvas to the state right after we drew the blue rect
+		ctx.putImageData(imageData, 0, 0);
+	}, 50);
+
+}
+function doLogic(){
 	console.log(gx + ", " + gy);
 	var gx = glx;
 	var gy = gly;
-	var triNum = Math.floor((Math.random() * 3));
+	var triNum = Math.floor((Math.random() * tri.length));
 
 	var new_x = 0;
 	var new_y = 0;
@@ -47,14 +89,21 @@ function doLogic(gx, gy){
 	new_x = (tri[triNum][0]-glx)/2 + glx;
 	new_y = (tri[triNum][1]-gly)/2 + gly;
 	
-	gx = new_x;
-	gy = new_y;
 	
 	glx = new_x;
 	gly = new_y;
 	
-	console.log(gx + ", " + gy);
+	if(drawLine){
+		makeLine(gx, gy, glx, gly);
+		setTimeout(function () {
+			makeCircle(glx,gly);
+		}, 50);
+	}
 	makeCircle(glx,gly);
+	//console.log(gx + ", " + gy);
+	
+	
+
 }
 
 
@@ -64,7 +113,7 @@ function move() {
 	doLogic();
     setTimeout(function() {
 		move();//glx,gly)
-	}, 100);
+	}, 10);
     
 } //)();
 
